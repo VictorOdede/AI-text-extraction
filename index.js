@@ -10,6 +10,8 @@ const app = express()
 const client = new DocumentProcessorServiceClient()
 const prisma = new PrismaClient()
 
+app.set('trust proxy', true);
+
 app.post('/document-ocr', fileUpload(), async (req, res) => {
   console.log("-----------request received------------")
   // obtain file from request data
