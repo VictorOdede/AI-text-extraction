@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "npx prisma migrate deploy && node index.js"
   },
 
   "author": "Vik",
@@ -21,6 +21,6 @@
     "node": ">=16.0.0"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node seed.js"
   }
 }

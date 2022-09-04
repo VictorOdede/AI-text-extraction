@@ -236,5 +236,5 @@ app.post('/document-form', fileUpload(), async (req, res) => {
 })
 
 app.listen("8081", () => {
-  console.log("Server is running...")
+  console.log(`The DB is at: ${process.env.DATABASE_URL}`)
 })
