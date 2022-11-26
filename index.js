@@ -60,7 +60,7 @@ app.post('/document-ocr', fileUpload(), async (req, res) => {
 })
 
 
-// -----------------FORM PROCESSOR-----------------------
+/***************************************FORM PROCESSOR**********************************************/ 
 
 
 app.post('/document-form', fileUpload(), async (req, res) => {
@@ -105,7 +105,7 @@ app.post('/document-form', fileUpload(), async (req, res) => {
         console.log("No document found")
       }
       // console.log(`Full document text: ${JSON.stringify(text)}`);
-      // console.log(`There are ${document.pages.length} page(s) in this                    document.`);
+      // console.log(`There are ${document.pages.length} page(s) in this document.`);
 
       const saveTableInfo = async (table, text) => {
         // ensure table headers are the same as schema
@@ -122,22 +122,20 @@ app.post('/document-form', fileUpload(), async (req, res) => {
         const mySchema = `"Receipt No" | "Completion Time" | "Details"`
         if (TbHeader === mySchema) {
           console.log("--------IT MATCHES--------")
-        } else {
-          console.log("--------IT DOES NOT MATCH--------")
-        }
+          console.log(`There are ${table.bodyRows.length} items in this table`)
 
-        // create loop to save each row to db
-        let bodyArr = [];
-        for (const bodyCell of table.bodyRows[2].cells) {
-          const bodyCellText = getText(bodyCell.layout.textAnchor, text);
-          bodyArr.push(bodyCellText.trim())
+          // create loop to save each row to db
+          let bodyArr = [];
+          for (const bodyCell of table.bodyRows[3].cells) {
+            const bodyCellText = getText(bodyCell.layout.textAnchor, text);
+            bodyArr.push(bodyCellText.trim().toString())
+           
+          }
           console.log(
-            `First row data: ${bodyRowText.substring(0, bodyRowText.length - 3)}`
+            `First row data: ${bodyArr}`
           );
 
-          const [receipt, time, details, status, moneyIn, moneyOut, balance] = bodyArr;
-
-
+          const [receipt, time, details, status, moneyIn, moneyOut, balance] = bodyArr
           const dataObj = {
             receipt: receipt,
             time: time,
@@ -151,8 +149,12 @@ app.post('/document-form', fileUpload(), async (req, res) => {
           const createRow = await prisma.mpesaStatements.create({
             data: dataObj,
           })
-
+        } else {
+          console.log("--------IT DOES NOT MATCH--------")
         }
+
+      
+        
       }
 
 
@@ -179,10 +181,10 @@ app.post('/document-form', fileUpload(), async (req, res) => {
         // Print first body row
         let bodyRowText = '';
         let bodyArr = [];
-        for (const bodyCell of table.bodyRows[2].cells) {
+        for (const bodyCell of table.bodyRows[3].cells) {
           const bodyCellText = getText(bodyCell.layout.textAnchor, text);
           bodyRowText += `${JSON.stringify(bodyCellText.trim())} | `;
-          bodyArr.push(bodyCellText.trim())
+          bodyArr.push(bodyCellText.trim().toString())
         }
         console.log(
           `First row data: ${bodyRowText.substring(0, bodyRowText.length - 3)} ARRAY: ${bodyArr}`
@@ -213,15 +215,16 @@ app.post('/document-form', fileUpload(), async (req, res) => {
           console.log(`Table with ${numCollumns} columns and ${numRows}   
           rows:`);
           printTableInfo(table, text);
+          saveTableInfo(table, text);
         }
-        console.log(`Found ${page.formFields.length} form field(s):`);
-        for (const field of page.formFields) {
-          const fieldName = getText(field.fieldName.textAnchor, text);
-          const fieldValue = getText(field.fieldValue.textAnchor, text);
-          console.log(
-            `\t* ${JSON.stringify(fieldName)}: ${JSON.stringify(fieldValue)}`
-          );
-        }
+        // console.log(`Found ${page.formFields.length} form field(s):`);
+        // for (const field of page.formFields) {
+        //   const fieldName = getText(field.fieldName.textAnchor, text);
+        //   const fieldValue = getText(field.fieldValue.textAnchor, text);
+        //   console.log(
+        //     `\t* ${JSON.stringify(fieldName)}: ${JSON.stringify(fieldValue)}`
+        //   );
+        // }
 
       }
 
@@ -236,5 +239,5 @@ app.post('/document-form', fileUpload(), async (req, res) => {
 })
 
 app.listen("8081", () => {
-  console.log(`The DB is at: ${process.env.DATABASE_URL}`)
+  console.log(`The server is running...`)
 })

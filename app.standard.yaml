@@ -21,4 +21,4 @@ env_variables:
   DB_PASS: "b00kmyface"
   DB_NAME: "db1"
   DATABASE_URL: "postgresql://doc-scan:b00kmyface@localhost:5432/demo?host=/cloudsql/doc-scanner-360618:us-east5:mpesa-statements"
-  DATABASE_URL_DEV: "postgresql://doc-scan:b00kmyface@34.162.31.99:5432/db1"
+  DATABASE_URL_DEV: "postgresql://postgres:1234qwerty@localhost:5432/mpesa_statements"

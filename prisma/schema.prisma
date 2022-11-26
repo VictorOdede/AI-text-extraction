@@ -3,7 +3,7 @@
 
 datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
+    url      = env("DATABASE_URL_DEV")
 }
 
 generator client {
@@ -11,14 +11,14 @@ generator client {
 }
 
 model mpesaStatements {
-    id       Int     @id @default(autoincrement())
-    receipt  String
-    time     String
-    details  String
-    status   String?
-    moneyIn  String?
-    moneyOut String?
-    balance  String?
-
-    @@unique([receipt])
+    id        Int      @id @default(autoincrement())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    receipt   String
+    time      String
+    details   String
+    status    String
+    moneyIn   String?
+    moneyOut  String?
+    balance   String?
 }
